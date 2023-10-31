@@ -1,0 +1,163 @@
+##Objectives
+create a MySQL DB instance with Amazon RDS and connect to it.
+
+What will you accomplish?
+In this demo project, you will:
+
+Create a MySQL DB instance with AWS RDS
+
+Create an EC2 instance
+
+Connect the EC2 instance to the DB instance automatically
+
+Connect to the MySQL DB instance 
+
+Delete the DB instance and EC2 instance
+
+Step 1: Create a MySQL database instance
+Login to your AWS management console, click on Services on the menu bar, select database in the left navigation pane and choose RDS to open Amazon RDS.
+
+
+From the dashboard page, scroll down to create database section, then click on Create database
+
+
+As the creation method, choose Easy create and MySQL icon as Engine type.
+
+
+ 
+
+Select the Free Tier template.
+
+
+Now let’s configure our database settings as shown below:
+
+DB instance identifier: mysqldb-demo
+
+Master username: admin (leave the auto generate password box unchecked)
+
+Master password: school123
+
+Confirm master password: school123
+
+
+Open View default settings for Easy create and note the VPC value. 
+
+
+Click on Create database to create a new database with the previous settings.
+
+The creation process takes some minutes to be done. Then you can see the database status is Available
+
+
+Step 2: Create an EC2 instance
+In this section, we will create an Amazon EC2 instance with:
+
+The name: ec2-mysqldb-connect
+
+AMI machine: Amazon Linux 
+
+Instance type: t2.micro
+
+Create a new key pair: db-connect-key
+
+And attach the same VPC as for the DB instance (default VPC  in my case). This will help in the next step to connect the EC2 instance to the database.
+
+Finally, the EC2 instance has been created successfully.
+
+
+Step 3: Connect the EC2 instance to the DB instance automatically
+To connect an EC2 instance and the DB instance automatically, follow the instructions below:
+
+Go to Amazon RDS service
+
+Click on Databases in the left panel.
+
+Choose mysqldb-demo database and click on Actions, then choose Set up EC2 connection
+
+
+In the Set up EC2 connection, choose the EC2 instance we created ( ec2-mysqldb-connect) and click on Continue.
+
+
+Then Click on Confirm and set up in the Review and confirm page. You will get a notification as in the following image.
+
+
+Step 4: Connect to the MySQL DB instance
+Once the connection is established between DB instance and EC2 instance, you can connect the the DB instance. To connect to the MySQL DB instance, follow the steps below:
+
+Go to Amazon RDS service
+
+Click on Databases in the left panel.
+
+Click on mysqldb-demo database.
+
+On the Connectivity & security tab, copy the endpoint and the port number
+
+
+Note: Make sure port 22 is open in the inbound rule of the server to allow access via ssh.
+
+Connect to the EC2 instance in ssh:
+
+Go to EC2 service
+
+Click on Instances in the left panel, then click on the instance Id of ec2-mysqldb-connect.
+
+Click on Connect button
+
+Click in the SSH client tab, then copy the chmod and ssh commands in the example.
+
+
+Open your git bash terminal and paste the command below (replace chmod and ssh commands with those you copied before)
+
+
+
+cd ~/Downloads
+chmod 400 db-connect-key.pem
+ssh -i "db-connect-key.pem" ec2-user@ec2-44-202-0-20.compute-1.amazonaws.com
+Now, install the mysql command-line client from MariaDB with the commands below:
+
+
+
+sudo yum update -y
+sudo yum install mariadb105-server -y
+To connect to the MySQL DB instance, use the change the endpoint in the below command and run it.
+
+
+
+mysql -h mysqldb-demo.c2qyimycqlj9.us-east-1.rds.amazonaws.com -P 3306 -u admin -p
+Then enter the password: school123
+
+
+Run this SQL command in MySQL prompt to get the current date and time:
+
+
+
+SELECT CURRENT_TIMESTAMP;
+
+Step 5: Delete the DB instance and EC2 instance
+Finally, we have done the objective of this demo project. We have to delete all instances created for the project the avoid extra charges.
+
+Delete the EC2 instance
+To delete the EC2 instance, follow the instructions below:
+
+Connect to the AWS EC2 service
+
+Click on Instances in the left panel, then choose ec2-mysqldb-connect
+
+Click on Instance state, choose Terminate instance, then Click on Terminate
+
+
+Delete the MySQL DB instance
+To delete the MySQL DB instance, follow the steps below:
+
+Go to Amazon RDS service.
+
+Click on Databases in the left panel.
+
+Click on mysqldb-demo database.
+
+Click on Actions, choose Delete 
+
+
+Check Create final snapshot box and uncheck Retain automated backups box, then type delete me in the field and click the Delete button.
+
+
+The deletion process takes some time to be done.
